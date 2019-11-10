@@ -1,24 +1,22 @@
-import { Type } from 'class-transformer';
-
-export class PlexAccount {
+export class PlexAccountDto {
   readonly id?: number;
   readonly thumb?: string;
   readonly title?: string;
 }
 
-export class PlexServer {
+export class PlexServerDto {
   readonly title?: string;
   readonly uuid?: string;
 }
 
-export class PlexPlayer {
+export class PlexPlayerDto {
   readonly local?: boolean;
   readonly publicAddress?: string;
   readonly title?: string;
   readonly uuid?: string;
 }
 
-export class PlexMetadata {
+export class PlexMetadataDto {
   readonly librarySectionType?: string;
   readonly ratingKey?: string;
   readonly key?: string;
@@ -50,15 +48,11 @@ export class PlexWebhookDto {
   readonly user?: boolean;
   readonly owner?: boolean;
 
-  @Type(() => PlexAccount)
-  readonly Account?: PlexAccount;
+  readonly Account?: PlexAccountDto;
 
-  @Type(() => PlexServer)
-  readonly Server?: PlexServer;
+  readonly Server?: PlexServerDto;
 
-  @Type(() => PlexPlayer)
-  readonly Player?: PlexPlayer;
+  readonly Player?: PlexPlayerDto;
 
-  @Type(() => PlexMetadata)
-  readonly Metadata?: PlexMetadata;
+  readonly Metadata?: PlexMetadataDto;
 }
