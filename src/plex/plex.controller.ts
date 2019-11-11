@@ -15,11 +15,12 @@ const plexGetHandler: RequestHandler = async (req, res) => {
  */
 const plexWebhookHandler: RequestHandler = async (req, res) => {
   const message = {
-    payload: req.body.payload,
+    payload: JSON.parse(req.body.payload),
     thumb: req.file?.buffer.toString('base64'),
   };
   appLogger.verbose(message);
   plexWehbookLogger.info(message);
+  req.io.emit('plexWebhook', JSON.stringify(message));
   return res.sendStatus(202);
 };
 
