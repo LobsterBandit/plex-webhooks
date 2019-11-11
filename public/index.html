@@ -15,9 +15,13 @@
     var socket = io();
     socket.on('plexWebhook', function(data) {
       var parsedData = JSON.parse(data);
-      console.log(parsedData);
+      // console.log('Parsed', parsedData);
+      // console.log('Message', parsedData.message);
+      // console.log('Payload', parsedData.message.payload);
+      // console.log('Event', parsedData.message.payload.event);
+      var event = parsedData.message.payload.event;
       var logData = document.createElement('li');
-      logData.append(`Plex Webhook Event: ${parsedData.payload.event}`);
+      logData.append(`Plex Webhook Event: ${event}`);
       root.appendChild(logData);
     });
   </script>

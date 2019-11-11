@@ -20,7 +20,8 @@ const plexWebhookHandler: RequestHandler = async (req, res) => {
   };
   appLogger.verbose(message);
   plexWehbookLogger.info(message);
-  req.io.emit('plexWebhook', JSON.stringify(message));
+  // live emit rather than reading from log
+  // req.io.emit('plexWebhook', JSON.stringify(message));
   return res.sendStatus(202);
 };
 
