@@ -7,22 +7,32 @@
     <title>Plex Webhooks</title>
   </head>
   <body>
-    <div id="root"><ul id="logList"></ul></div>
+    <div id="root">
+      <ul id="history"></ul>
+      <ul id="logList"></ul>
+    </div>
   </body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
   <script>
-    var root = document.querySelector('#logList');
+    function appendDataToList(element) {
+      return function(data) {
+        var parsedData = JSON.parse(data);
+        console.log('Parsed', parsedData);
+        console.log('Message', parsedData.message);
+        console.log('Payload', parsedData.message.payload);
+        console.log('Event', parsedData.message.payload.event);
+        var event = parsedData.message.payload.event;
+        var dataElement = document.createElement('li');
+        dataElement.append(`Plex Webhook Event: ${event}`);
+        element.appendChild(dataElement);
+      };
+    }
+
+    var rootEl = document.querySelector('#logList');
+    var historyEl = document.querySelector('#history');
+
     var socket = io();
-    socket.on('plexWebhook', function(data) {
-      var parsedData = JSON.parse(data);
-      // console.log('Parsed', parsedData);
-      // console.log('Message', parsedData.message);
-      // console.log('Payload', parsedData.message.payload);
-      // console.log('Event', parsedData.message.payload.event);
-      var event = parsedData.message.payload.event;
-      var logData = document.createElement('li');
-      logData.append(`Plex Webhook Event: ${event}`);
-      root.appendChild(logData);
-    });
+    socket.on('plexWebhook', appendDataToList(rootEl));
+    socket.on('plexWebhook:history', appendDataToList(historyEl));
   </script>
 </html>

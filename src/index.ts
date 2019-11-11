@@ -33,10 +33,16 @@ function bootstrap() {
   // mod to buffer the last X nubmer of lines
   const logTail = new Tail(plexWebhookLogName);
 
+  const logs: string[] = [];
+
   io.on('connection', function(socket) {
     appLogger.info('user connected to socket');
 
     // deliver last X number of lines on connect
+    logs.map(log => {
+      // appLogger.info(`Sending history log entry: ${log}`);
+      socket.emit('plexWebhook:history', log);
+    });
 
     socket.on('disconnect', function() {
       appLogger.info('user disconnected from socket');
@@ -45,6 +51,8 @@ function bootstrap() {
 
   logTail.on('line', data => {
     appLogger.verbose('Emitting plexWebhook event');
+    const newLogLength = logs.push(data);
+    if (newLogLength > 10) logs.shift();
     io.emit('plexWebhook', data);
   });
 
