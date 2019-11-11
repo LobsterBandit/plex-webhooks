@@ -4,22 +4,23 @@ import cors from 'cors';
 import { ErrorRequestHandler } from 'express';
 import expressWinston from 'express-winston';
 import winston from 'winston';
+import { globalRequestLogger } from './logger';
 
-export const globalRequestLogger = expressWinston.logger({
-  transports: [new winston.transports.Console()],
-  format: winston.format.combine(
-    winston.format.colorize(),
-    winston.format.json(),
-  ),
-});
+// export const globalRequestLogger = expressWinston.logger({
+//   transports: [new winston.transports.Console()],
+//   format: winston.format.combine(
+//     winston.format.colorize(),
+//     winston.format.json(),
+//   ),
+// });
 
-export const globalErrorLogger = expressWinston.errorLogger({
-  transports: [new winston.transports.Console()],
-  format: winston.format.combine(
-    winston.format.colorize(),
-    winston.format.json(),
-  ),
-});
+// export const globalErrorLogger = expressWinston.errorLogger({
+//   transports: [new winston.transports.Console()],
+//   format: winston.format.combine(
+//     winston.format.colorize(),
+//     winston.format.json(),
+//   ),
+// });
 
 /**
  * Catches malformed JSON body errors
