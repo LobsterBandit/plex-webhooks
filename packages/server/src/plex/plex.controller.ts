@@ -5,7 +5,7 @@ import { appLogger, plexWehbookLogger } from '../logger';
 /**
  * Handler for plex endpoint
  */
-const plexGetHandler: RequestHandler = async (req, res) => {
+const plexGetHandler: RequestHandler = (req, res) => {
   appLogger.info('empty get handler');
   return res.sendStatus(200);
 };
@@ -13,7 +13,7 @@ const plexGetHandler: RequestHandler = async (req, res) => {
 /**
  * Handler for plex webhooks
  */
-const plexWebhookHandler: RequestHandler = async (req, res) => {
+const plexWebhookHandler: RequestHandler = (req, res) => {
   const message = {
     payload: JSON.parse(req.body.payload),
     thumb: req.file?.buffer.toString('base64'),
@@ -21,7 +21,7 @@ const plexWebhookHandler: RequestHandler = async (req, res) => {
   appLogger.verbose(message);
   plexWehbookLogger.info(message);
   // live emit rather than reading from log
-  // req.io.emit('plexWebhook', JSON.stringify(message));
+  req.io && req.io.emit('plexWebhook', JSON.stringify(message));
   return res.sendStatus(202);
 };
 

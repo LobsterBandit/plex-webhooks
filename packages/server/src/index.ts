@@ -5,6 +5,7 @@ import { Tail } from 'tail';
 import { PlexController } from './plex/plex.controller';
 import { middleware } from './middleware';
 import { appLogger, globalErrorLogger, plexWebhookLogName } from './logger';
+import fs from 'fs';
 
 function bootstrap() {
   appLogger.info('Bootstrapping the app');
@@ -21,17 +22,12 @@ function bootstrap() {
     req.io = io;
     next();
   });
-
   app.use(...middleware);
-
   app.use('/', PlexController);
-
   app.use(globalErrorLogger);
-
   app.use('/view', express.static('public'));
 
-  // mod to buffer the last X nubmer of lines
-  const logTail = new Tail(plexWebhookLogName);
+  fs.closeSync(fs.openSync(plexWebhookLogName, 'a'));
 
   const logs: string[] = [];
 
@@ -40,7 +36,6 @@ function bootstrap() {
 
     // deliver last X number of lines on connect
     logs.map(log => {
-      // appLogger.info(`Sending history log entry: ${log}`);
       socket.emit('plexWebhook:history', log);
     });
 
@@ -48,6 +43,8 @@ function bootstrap() {
       appLogger.info('user disconnected from socket');
     });
   });
+
+  const logTail = new Tail(plexWebhookLogName);
 
   logTail.on('line', data => {
     appLogger.verbose('Emitting plexWebhook event');
